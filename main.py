@@ -273,13 +273,13 @@ def list():
                     if recipe:
                         recipe_list = ""
                         for item in recipe["products"]:
-                            recipe_list = recipe_list + item + "\n"
+                            recipe_list = recipe_list + item + ", \n"
                         mess = "Нашла подходящий рецепт для вашего списка, чтобы приготовить " + recipe["name"] + " вам не хватает:\n\n" + recipe_list + "\n\nДобавить в список?"
 
                         img = {
                           "type": "BigImage",
                           "image_id": "1652229/bdbc730d9af3bfe5d76d",
-                          "title": "↓↓↓",
+                          "title": recipe["name"],
                           "description": recipe_list
                         }
                         response["response"]["card"] = img
@@ -307,6 +307,7 @@ def list():
             #если просто список
             elif user["is_list_order"] == 0:
                 user["id_stage"] = 40 #отправляем на стадию 40, отправки обычных списков
+
             db.update_yandex_user(r.user_id, stage_code = user["id_stage"])
 
 
@@ -318,12 +319,12 @@ def list():
             for item in recipe["products"]:
                 recipe_list = recipe_list + item + "\n"
 
-            mess = "Привет, " + user["first_name"] + ", вы не завершили заполнение списка, нашла рецепт " + recipe["name"] + " для вашего списка, не хватает:\n\n" + recipe_list + "\n\nДобавить?"
+            mess = "Привет, " + user["first_name"] + ", вы не завершили заполнение списка, нашла рецепт " + recipe["name"] + " чтобы приготовить не хватает:\n\n" + recipe_list + "\n\nДобавить?"
 
             img = {
                       "type": "BigImage",
                       "image_id": "1652229/bdbc730d9af3bfe5d76d",
-                      "title": "↓↓↓",
+                      "title": recipe["name"],
                       "description": recipe_list
                     }
             response["response"]["card"] = img
@@ -432,16 +433,18 @@ def list():
         #если есть экран, то выведем получившийся список на экран
         if r.has_screen == 1:
             list_products = db.get_yandex_list(user["active_list"]) #получаем наш список продуктов
-            mess = "Продублировать список вам по СМС, Телеграм или вацап?"
-            img = {
-                      "type": "BigImage",
-                      "image_id": "213044/74c83c1a5365983fa045",
-                      "title": "список:",
-                      "description": list_products
-                    }
-            response["response"]["card"] = img
+
+            mess = "Ваш список:\n\n\n" + list_products + "\n\n\nПродублировать в Телеграм, Вацап или по СМС?"
+            #mess = "Продублировать список вам по СМС, Телеграм или Вацап?"
+            #img = {
+            #          "type": "BigImage",
+            #          "image_id": "213044/74c83c1a5365983fa045",
+            #          "title": "список:",
+            #          "description": list_products
+            #        }
+            #response["response"]["card"] = img
         elif r.has_screen == 0:
-            mess = "Список готов отправить его вам по СМС, в Телеграм или в Вацап?"
+            mess = "Список готов отправить его вам в Телеграм, Вацап или по СМС?"
 
 
         #переходим на стадию 32 (Подтверждение доставки)
@@ -465,14 +468,14 @@ def list():
         if r.new_session:
             if r.has_screen == 1:
                 list_products = db.get_yandex_list(user["active_list"]) #получаем наш список продуктов
-                mess = "Привет, " + user["first_name"] + ", у вас готов список продуктов.\nПродублировать его по СМС, Телеграм или вацап?"
-                img = {
-                      "type": "BigImage",
-                      "image_id": "213044/74c83c1a5365983fa045",
-                      "title": "список:",
-                      "description": list_products
-                    }
-                response["response"]["card"] = img
+                mess = "Привет, " + user["first_name"] + ", список готов:\n\n\n" + list_products + "\n\n\nПродублировать его в Телеграм, Вацап или по СМС?"
+                #img = {
+                #      "type": "BigImage",
+                #      "image_id": "213044/74c83c1a5365983fa045",
+                #      "title": "список:",
+                #      "description": list_products
+                #    }
+                #response["response"]["card"] = img
 
                 #items = []
 
@@ -492,7 +495,7 @@ def list():
                 #    }
                 #response["response"]["card"] = footer
             elif r.has_screen == 0:
-                mess = "Привет, " + user["first_name"] + ", у вас готов список продуктов, отправить его вам по СМС, в Телеграм или в Вацап?"
+                mess = "Привет, " + user["first_name"] + ", у вас готов список продуктов, отправить его вам в Телеграм, Вацап по СМС?"
 
         else:
             if re.search(r'смс|первое|сообщ|sms',r.original_utterance.lower()):
@@ -514,7 +517,7 @@ def list():
 
             #если после ветки выше мы так и не заполнии mess, то отправим дополнительный запрос
             if not(mess):
-                mess = "Не поняла, отправить список вам по СМС, Телеграм или Вацап?"
+                mess = "Так куда, отправить список в Телеграм, Вацап или по СМС?"
                 #set_button()
             else:
                 discount = db.find_yandex_list_discont(user["active_list"])

@@ -224,12 +224,12 @@ class MySQL:
             return prod_list
         else:
             #выводим активный список
-            sql_query = """select concat(rpad(l.product,(70 - length(ifnull(concat(p.price,'p.'),0))),'.'),ifnull(concat(p.price,'p.'),'')) prod
+            sql_query = """select concat(rpad(lower(l.product), 15 - length(ifnull(concat(p.price,'р.'),0)),' '),ifnull(concat(p.price,'р.'),''))  prod
                              from yandex_list_product_tbl l
                              left join yandex_products_tbl p on lower(p.product_name) = lower(l.product)
                             where l.id_list = '{0}'
                             union all
-                            select concat(rpad('ИТОГО:',(67 - length(ifnull(concat(p.price,'p.'),0))),'.'),ifnull(concat('~',sum(p.price),'p.'),'')) prod
+                            select concat(rpad('ИТОГО около:',(20 - length(ifnull(concat(p.price,'p.'),0))),' '),ifnull(concat(sum(p.price),'р.'),'')) prod
                               from yandex_list_product_tbl l
                               left join yandex_products_tbl p on lower(p.product_name) = lower(l.product)
                               where l.id_list = '{0}';""".format(id_list)
@@ -240,7 +240,7 @@ class MySQL:
             prod_list = ""
 
             for item in result:
-                prod_list = prod_list + item[0].lower()
+                prod_list = prod_list + item[0] + '\n'
 
             return prod_list
 
