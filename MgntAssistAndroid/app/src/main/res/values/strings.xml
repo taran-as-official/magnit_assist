@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Mgnt Assist</string>
+
+    <string name="record">Record</string>
+    <string name="play">Play</string>
+    <string name="list">List of recordings</string>
+    <string name="enterAudioName">Enter Audio Name</string>
+    <string name="pleaseEnterName">Name cannot be empty</string>
+    <string name="stop">Stop</string>
+    <string name="isRecording">Your voice is recording :</string>
+    <string name="goToList">Please go the list screen to play your recording</string>
+    <string name="done">Done</string>
+    <string name="voiceRecorder">Voice Recorder</string>
+</resources>
